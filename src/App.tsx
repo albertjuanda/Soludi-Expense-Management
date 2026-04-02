@@ -95,7 +95,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles?: strin
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Soludi-Expense-Management">
       <Layout>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
