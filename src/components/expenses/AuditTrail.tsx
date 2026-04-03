@@ -2,6 +2,7 @@ import React from 'react';
 import type { AuditEntry } from '../../types';
 import { format } from 'date-fns';
 import Avatar from '../ui/Avatar';
+import { useTranslation } from '../../i18n/useTranslation';
 import {
   CheckCircle2,
   XCircle,
@@ -62,6 +63,7 @@ function getActionConfig(action: string): ActionConfig {
 }
 
 const AuditTrail: React.FC<AuditTrailProps> = ({ entries }) => {
+  const { t } = useTranslation();
   const sorted = [...entries].sort((a, b) =>
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
@@ -92,7 +94,7 @@ const AuditTrail: React.FC<AuditTrailProps> = ({ entries }) => {
                     <Avatar name={entry.actorName} size="xs" />
                     <div>
                       <span className="text-sm font-semibold text-slate-800">{entry.action}</span>
-                      <span className="text-xs text-slate-500 ml-1">by {entry.actorName}</span>
+                      <span className="text-xs text-slate-500 ml-1">{t.audit.by} {entry.actorName}</span>
                     </div>
                   </div>
                   <time className="text-xs text-slate-400 flex-shrink-0">

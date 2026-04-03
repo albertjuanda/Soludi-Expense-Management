@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { Language } from '../i18n/translations';
 import type {
   User,
   Project,
@@ -39,12 +40,16 @@ interface AppState {
   schedule: ReimbursementSchedule;
   notifications: Notification[];
   sidebarOpen: boolean;
+  language: Language;
 
   // Auth
   switchUser: (userId: string) => void;
 
   // Sidebar
   setSidebarOpen: (open: boolean) => void;
+
+  // Language
+  setLanguage: (lang: Language) => void;
 
   // Expenses
   submitExpense: (data: {
@@ -95,6 +100,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   schedule: mockReimbursementSchedule,
   notifications: mockNotifications,
   sidebarOpen: true,
+  language: 'en' as Language,
 
   switchUser: (userId) => {
     const user = get().users.find(u => u.id === userId);
@@ -102,6 +108,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  setLanguage: (lang) => set({ language: lang }),
 
   submitExpense: (data) => {
     const { currentUser, expenses } = get();

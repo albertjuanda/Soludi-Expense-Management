@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store/appStore';
+import { useTranslation } from '../i18n/useTranslation';
 import ProjectCard from '../components/projects/ProjectCard';
 import Modal from '../components/ui/Modal';
 import EmptyState from '../components/ui/EmptyState';
@@ -8,6 +9,7 @@ import type { ProjectStatus } from '../types';
 
 const ProjectsPage: React.FC = () => {
   const { currentUser, projects, users, createProject } = useAppStore();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ProjectStatus | ''>('');
   const [showCreate, setShowCreate] = useState(false);
@@ -67,23 +69,23 @@ const ProjectsPage: React.FC = () => {
   };
 
   const statuses: Array<{ value: ProjectStatus | ''; label: string }> = [
-    { value: '', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'on_hold', label: 'On Hold' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'cancelled', label: 'Cancelled' },
+    { value: '', label: t.projects.allStatuses },
+    { value: 'active', label: t.projects.active },
+    { value: 'on_hold', label: t.projects.onHold },
+    { value: 'completed', label: t.projects.completed },
+    { value: 'cancelled', label: t.projects.cancelled },
   ];
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{filtered.length} project{filtered.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t.projects.title}</h1>
+          <p className="text-slate-500 text-sm mt-0.5">{filtered.length} {t.nav.projects.toLowerCase()}</p>
         </div>
         {isAdmin && (
           <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors">
-            <Plus size={16} /> New Project
+            <Plus size={16} /> {t.actions.newProject}
           </button>
         )}
       </div>
@@ -92,7 +94,7 @@ const ProjectsPage: React.FC = () => {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search projects..."
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder={`${t.actions.search}...`}
             className="w-full pl-9 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
         </div>
         <div className="flex gap-2">
@@ -108,8 +110,8 @@ const ProjectsPage: React.FC = () => {
       {filtered.length === 0 ? (
         <EmptyState
           icon={<FolderOpen size={28} className="text-slate-300" />}
-          title="No projects found"
-          description={search ? 'No projects match your search.' : 'No projects available.'}
+          title={t.projects.noProjects}
+          description={search ? t.projects.noProjectsSearch : t.projects.noProjectsAvail}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -118,47 +120,47 @@ const ProjectsPage: React.FC = () => {
       )}
 
       {/* Create project modal */}
-      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Create New Project">
+      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title={t.projects.createTitle}>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Project Name <span className="text-rose-500">*</span></label>
-            <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Q3 Field Operations"
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.projectName} <span className="text-rose-500">*</span></label>
+            <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t.projects.projectNamePlaceholder}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Description</label>
-            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Brief description of this project..."
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.description}</label>
+            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder={t.projects.descriptionPlaceholder}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Start Date <span className="text-rose-500">*</span></label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.startDate} <span className="text-rose-500">*</span></label>
               <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
                 className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">End Date <span className="text-rose-500">*</span></label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.endDate} <span className="text-rose-500">*</span></label>
               <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
                 className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Budget (optional)</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.budget}</label>
               <input type="number" value={form.budget} onChange={e => setForm(f => ({ ...f, budget: e.target.value }))} placeholder="0.00"
                 className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Project Admin</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.projectAdmin}</label>
               <select value={form.adminId} onChange={e => setForm(f => ({ ...f, adminId: e.target.value }))}
                 className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white">
-                <option value="">Current user</option>
+                <option value="">{t.projects.currentUser}</option>
                 {adminUsers.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
               </select>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Assign Team Members</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projects.assignTeam}</label>
             <div className="grid grid-cols-2 gap-2">
               {fieldUsers.map(u => (
                 <label key={u.id} className={`flex items-center gap-2 p-2.5 rounded-lg border cursor-pointer transition-colors ${form.assignedUserIds.includes(u.id) ? 'bg-indigo-50 border-indigo-300' : 'bg-slate-50 border-slate-200 hover:border-slate-300'}`}>
@@ -169,10 +171,10 @@ const ProjectsPage: React.FC = () => {
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
+            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">{t.actions.cancel}</button>
             <button onClick={handleCreate} disabled={!form.name || !form.startDate || !form.endDate}
               className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl transition-colors flex items-center gap-2">
-              <Plus size={15} /> Create Project
+              <Plus size={15} /> {t.actions.createProject}
             </button>
           </div>
         </div>

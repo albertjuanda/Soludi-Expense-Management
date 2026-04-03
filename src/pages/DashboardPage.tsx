@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
+import { useTranslation } from '../i18n/useTranslation';
 import MetricCard from '../components/dashboard/MetricCard';
 import ExpenseCard from '../components/expenses/ExpenseCard';
 import { DollarSign, CheckCircle2, Clock, AlertTriangle, TrendingUp, Users, FolderOpen, ChevronRight } from 'lucide-react';
@@ -10,6 +11,7 @@ import Avatar from '../components/ui/Avatar';
 
 const DashboardPage: React.FC = () => {
   const { currentUser, expenses, projects, users } = useAppStore();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   if (!currentUser) return null;
@@ -27,8 +29,8 @@ const DashboardPage: React.FC = () => {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Welcome back, {currentUser.name.split(' ')[0]} 👋</h1>
-          <p className="text-slate-500 text-sm mt-1">Here's a summary of your expense activity.</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t.dashboard.welcome}, {currentUser.name.split(' ')[0]} 👋</h1>
+          <p className="text-slate-500 text-sm mt-1">Here&apos;s a summary of your expense activity.</p>
         </div>
 
         {/* Revision alerts */}
@@ -36,7 +38,7 @@ const DashboardPage: React.FC = () => {
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle size={16} className="text-amber-600" />
-              <h3 className="text-sm font-bold text-amber-800">Action Required — Revision{pendingRevisions.length > 1 ? 's' : ''} Needed</h3>
+              <h3 className="text-sm font-bold text-amber-800">{t.dashboard.actionRequired} {pendingRevisions.length > 1 ? t.dashboard.revisionsNeeded : ''}</h3>
             </div>
             <div className="space-y-2">
               {pendingRevisions.map(exp => (
@@ -61,23 +63,23 @@ const DashboardPage: React.FC = () => {
         {/* Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <MetricCard
-            label="Total Requested"
+            label={t.dashboard.totalRequested}
             value={`$${totalRequested.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
-            subValue={`${myExpenses.length} requests`}
+            subValue={`${myExpenses.length} ${t.dashboard.requests}`}
             icon={<DollarSign size={20} />}
             color="indigo"
           />
           <MetricCard
-            label="Total Approved"
+            label={t.dashboard.totalApproved}
             value={`$${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
-            subValue={`${myExpenses.filter(e => ['approved','scheduled','reimbursed'].includes(e.status)).length} requests`}
+            subValue={`${myExpenses.filter(e => ['approved','scheduled','reimbursed'].includes(e.status)).length} ${t.dashboard.requests}`}
             icon={<CheckCircle2 size={20} />}
             color="emerald"
           />
           <MetricCard
-            label="Total Reimbursed"
+            label={t.dashboard.totalReimbursed}
             value={`$${totalReimbursed.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
-            subValue={`${myExpenses.filter(e => e.status === 'reimbursed').length} paid out`}
+            subValue={`${myExpenses.filter(e => e.status === 'reimbursed').length} ${t.dashboard.paidOut}`}
             icon={<TrendingUp size={20} />}
             color="violet"
           />
@@ -86,13 +88,13 @@ const DashboardPage: React.FC = () => {
         {/* Recent expenses */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-slate-800">Recent Expenses</h2>
-            <button onClick={() => navigate('/expenses')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">View all</button>
+            <h2 className="text-base font-bold text-slate-800">{t.dashboard.recentExpenses}</h2>
+            <button onClick={() => navigate('/expenses')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">{t.actions.viewAll}</button>
           </div>
           {recent.length === 0 ? (
             <div className="bg-white border border-slate-200 rounded-xl p-10 text-center">
-              <p className="text-slate-400 text-sm">No expenses yet.</p>
-              <button onClick={() => navigate('/submit')} className="mt-3 text-sm font-semibold text-indigo-600 hover:text-indigo-800">Submit your first expense →</button>
+              <p className="text-slate-400 text-sm">{t.dashboard.noExpenses}</p>
+              <button onClick={() => navigate('/submit')} className="mt-3 text-sm font-semibold text-indigo-600 hover:text-indigo-800">{t.dashboard.submitFirst}</button>
             </div>
           ) : (
             <div className="space-y-3">
@@ -115,28 +117,28 @@ const DashboardPage: React.FC = () => {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
-          <p className="text-slate-500 text-sm mt-1">Overview of your projects and pending approvals.</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t.dashboard.adminDashboard}</h1>
+          <p className="text-slate-500 text-sm mt-1">{t.dashboard.adminDesc}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard label="Pending Approvals" value={pendingApprovals.length} icon={<Clock size={20} />} color="amber" />
-          <MetricCard label="Active Projects" value={adminProjects.filter(p => p.status === 'active').length} icon={<FolderOpen size={20} />} color="indigo" />
+          <MetricCard label={t.dashboard.pendingApprovals} value={pendingApprovals.length} icon={<Clock size={20} />} color="amber" />
+          <MetricCard label={t.dashboard.activeProjects} value={adminProjects.filter(p => p.status === 'active').length} icon={<FolderOpen size={20} />} color="indigo" />
           <MetricCard
-            label="Total Committed"
+            label={t.dashboard.totalCommitted}
             value={`$${scopedExpenses.filter(e => ['approved','scheduled','reimbursed'].includes(e.status)).reduce((s,e)=>s+e.totalAmount,0).toLocaleString('en-US',{minimumFractionDigits:2})}`}
             icon={<CheckCircle2 size={20} />}
             color="emerald"
           />
-          <MetricCard label="Team Members" value={adminProjects.flatMap(p=>p.assignedUserIds).filter((v,i,a)=>a.indexOf(v)===i).length} icon={<Users size={20} />} color="violet" />
+          <MetricCard label={t.dashboard.teamMembers} value={adminProjects.flatMap(p=>p.assignedUserIds).filter((v,i,a)=>a.indexOf(v)===i).length} icon={<Users size={20} />} color="violet" />
         </div>
 
         {/* Pending approvals */}
         {pendingApprovals.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-bold text-slate-800">Pending Approvals</h2>
-              <button onClick={() => navigate('/expenses?status=processing')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">View all</button>
+              <h2 className="text-base font-bold text-slate-800">{t.dashboard.pendingApprovals}</h2>
+              <button onClick={() => navigate('/expenses?status=processing')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">{t.actions.viewAll}</button>
             </div>
             <div className="space-y-3">
               {pendingApprovals.slice(0, 4).map(e => <ExpenseCard key={e.id} expense={e} />)}
@@ -147,8 +149,8 @@ const DashboardPage: React.FC = () => {
         {/* Projects overview */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-slate-800">Your Projects</h2>
-            <button onClick={() => navigate('/projects')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">View all</button>
+            <h2 className="text-base font-bold text-slate-800">{t.dashboard.yourProjects}</h2>
+            <button onClick={() => navigate('/projects')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">{t.actions.viewAll}</button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {adminProjects.map(project => {
@@ -160,9 +162,9 @@ const DashboardPage: React.FC = () => {
                     <ChevronRight size={14} className="text-slate-300" />
                   </div>
                   <div className="flex gap-4 text-xs text-slate-500">
-                    <span>{projExpenses.filter(e=>e.status==='processing').length} pending</span>
-                    <span>{projExpenses.filter(e=>e.status==='approved').length} approved</span>
-                    <span>{projExpenses.length} total</span>
+                    <span>{projExpenses.filter(e=>e.status==='processing').length} {t.dashboard.pending}</span>
+                    <span>{projExpenses.filter(e=>e.status==='approved').length} {t.dashboard.approved}</span>
+                    <span>{projExpenses.length} {t.dashboard.total}</span>
                   </div>
                 </div>
               );
@@ -172,7 +174,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Recent activity */}
         <div>
-          <h2 className="text-base font-bold text-slate-800 mb-3">Recent Activity</h2>
+          <h2 className="text-base font-bold text-slate-800 mb-3">{t.dashboard.teamActivity}</h2>
           <div className="space-y-3">
             {recentActivity.map(e => <ExpenseCard key={e.id} expense={e} />)}
           </div>
@@ -191,20 +193,20 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Global Overview</h1>
-        <p className="text-slate-500 text-sm mt-1">Company-wide expense management summary.</p>
+        <h1 className="text-2xl font-bold text-slate-900">{t.dashboard.globalOverview}</h1>
+        <p className="text-slate-500 text-sm mt-1">{t.dashboard.globalDesc}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label="Gross Exposure" value={`$${totalExposure.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue="Processing + Approved + Scheduled" icon={<TrendingUp size={20} />} color="amber" />
-        <MetricCard label="Confirmed Liability" value={`$${confirmedLiability.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue="Approved + Scheduled" icon={<CheckCircle2 size={20} />} color="emerald" />
-        <MetricCard label="Total Disbursed" value={`$${disbursed.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={`${expenses.filter(e=>e.status==='reimbursed').length} reimbursed`} icon={<DollarSign size={20} />} color="indigo" />
-        <MetricCard label="Pending Review" value={pendingCount} subValue={`${scheduledCount} scheduled for payment`} icon={<Clock size={20} />} color="rose" />
+        <MetricCard label={t.dashboard.grossExposure} value={`$${totalExposure.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={t.metrics.processingApprovedScheduled} icon={<TrendingUp size={20} />} color="amber" />
+        <MetricCard label={t.dashboard.confirmedLiability} value={`$${confirmedLiability.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={t.metrics.approvedScheduled} icon={<CheckCircle2 size={20} />} color="emerald" />
+        <MetricCard label={t.dashboard.totalDisbursed} value={`$${disbursed.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={`${expenses.filter(e=>e.status==='reimbursed').length} ${t.metrics.reimbursed}`} icon={<DollarSign size={20} />} color="indigo" />
+        <MetricCard label={t.dashboard.pendingReview} value={pendingCount} subValue={`${scheduledCount} ${t.dashboard.awaitingPayment}`} icon={<Clock size={20} />} color="rose" />
       </div>
 
       {/* Status breakdown */}
       <div className="bg-white border border-slate-200 rounded-xl p-5">
-        <h2 className="text-sm font-bold text-slate-800 mb-4">Status Breakdown</h2>
+        <h2 className="text-sm font-bold text-slate-800 mb-4">{t.dashboard.statusBreakdown}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {(['processing','approved','rejected','revision','scheduled','reimbursed'] as const).map(status => {
             const count = expenses.filter(e=>e.status===status).length;
@@ -226,8 +228,8 @@ const DashboardPage: React.FC = () => {
         {/* Recent expenses */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-slate-800">Recent Submissions</h2>
-            <button onClick={() => navigate('/expenses')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">View all</button>
+            <h2 className="text-base font-bold text-slate-800">{t.dashboard.recentSubmissions}</h2>
+            <button onClick={() => navigate('/expenses')} className="text-xs font-semibold text-indigo-600 hover:text-indigo-800">{t.actions.viewAll}</button>
           </div>
           <div className="space-y-3">
             {expenses.slice(0, 5).map(e => <ExpenseCard key={e.id} expense={e} />)}
@@ -236,7 +238,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Top users */}
         <div>
-          <h2 className="text-base font-bold text-slate-800 mb-3">Team Activity</h2>
+          <h2 className="text-base font-bold text-slate-800 mb-3">{t.dashboard.teamActivity}</h2>
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
             {users.filter(u=>u.role==='user').map((u, i) => {
               const userExpenses = expenses.filter(e=>e.userId===u.id);
@@ -250,7 +252,7 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-xs font-bold text-slate-700">${total.toLocaleString('en-US',{minimumFractionDigits:2})}</p>
-                    <p className="text-xs text-slate-400">{userExpenses.length} requests</p>
+                    <p className="text-xs text-slate-400">{userExpenses.length} {t.dashboard.requests}</p>
                   </div>
                 </div>
               );

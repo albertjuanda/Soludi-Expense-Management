@@ -3,9 +3,11 @@ import { useAppStore } from '../../store/appStore';
 import { CalendarClock, CheckCircle2, Banknote, ChevronDown } from 'lucide-react';
 import StatusPill from '../ui/StatusPill';
 import { format } from 'date-fns';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const BulkReimbursement: React.FC = () => {
   const { expenses, users, projects, schedule, updateSchedule, bulkMarkReimbursed } = useAppStore();
+  const { t } = useTranslation();
   const [showSchedule, setShowSchedule] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [confirmed, setConfirmed] = useState(false);
@@ -53,15 +55,15 @@ const BulkReimbursement: React.FC = () => {
               <CalendarClock size={16} className="text-indigo-600" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-slate-800">Payment Schedule</p>
+              <p className="text-sm font-semibold text-slate-800">{t.bulk.paymentSchedule}</p>
               <p className="text-xs text-slate-500 capitalize">
-                {schedule.frequency} · Next: {format(new Date(schedule.nextPaymentDate), 'MMM d, yyyy')}
+                {schedule.frequency} · {t.bulk.next}: {format(new Date(schedule.nextPaymentDate), 'MMM d, yyyy')}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${schedule.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
-              {schedule.isActive ? 'Active' : 'Inactive'}
+              {schedule.isActive ? t.bulk.active : t.bulk.inactive}
             </span>
             <ChevronDown size={16} className={`text-slate-400 transition-transform ${showSchedule ? 'rotate-180' : ''}`} />
           </div>
@@ -71,19 +73,19 @@ const BulkReimbursement: React.FC = () => {
           <div className="px-5 pb-5 border-t border-slate-100">
             <div className="grid grid-cols-2 gap-4 pt-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Frequency</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.bulk.frequency}</label>
                 <select
                   value={schedule.frequency}
                   onChange={e => updateSchedule({ frequency: e.target.value as 'weekly' | 'biweekly' | 'monthly' })}
                   className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white"
                 >
-                  <option value="weekly">Weekly</option>
-                  <option value="biweekly">Bi-weekly</option>
-                  <option value="monthly">Monthly</option>
+                  <option value="weekly">{t.bulk.weekly}</option>
+                  <option value="biweekly">{t.bulk.biweekly}</option>
+                  <option value="monthly">{t.bulk.monthly}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Next Payment Date</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.bulk.nextPaymentDate}</label>
                 <input
                   type="date"
                   value={schedule.nextPaymentDate}
@@ -101,7 +103,7 @@ const BulkReimbursement: React.FC = () => {
                   />
                   <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                 </label>
-                <span className="text-sm text-slate-600">Schedule active</span>
+                <span className="text-sm text-slate-600">{t.bulk.scheduleActive}</span>
               </div>
             </div>
           </div>
@@ -113,7 +115,7 @@ const BulkReimbursement: React.FC = () => {
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Banknote size={16} className="text-emerald-600" />
-            <h3 className="text-sm font-bold text-slate-800">Scheduled for Payment</h3>
+            <h3 className="text-sm font-bold text-slate-800">{t.bulk.scheduledForPayment}</h3>
             <span className="px-2 py-0.5 text-xs font-bold bg-indigo-100 text-indigo-700 rounded-full">
               {scheduledExpenses.length}
             </span>
@@ -123,7 +125,7 @@ const BulkReimbursement: React.FC = () => {
               onClick={selectAll}
               className="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
             >
-              {selectedIds.size === scheduledExpenses.length ? 'Deselect all' : 'Select all'}
+              {selectedIds.size === scheduledExpenses.length ? t.bulk.deselectAll : t.bulk.selectAll}
             </button>
           )}
         </div>
@@ -131,12 +133,12 @@ const BulkReimbursement: React.FC = () => {
         {confirmed && (
           <div className="mx-5 mt-4 flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700">
             <CheckCircle2 size={16} />
-            Payment processed successfully!
+            {t.bulk.paymentProcessed}
           </div>
         )}
 
         {scheduledExpenses.length === 0 ? (
-          <p className="text-sm text-slate-400 text-center py-10">No expenses scheduled for payment</p>
+          <p className="text-sm text-slate-400 text-center py-10">{t.bulk.noScheduled}</p>
         ) : (
           <>
             <div className="divide-y divide-slate-50">
@@ -178,7 +180,7 @@ const BulkReimbursement: React.FC = () => {
               <div className="text-sm text-slate-600">
                 {selectedIds.size > 0 && (
                   <span>
-                    <span className="font-bold text-slate-800">{selectedIds.size}</span> selected ·{' '}
+                    <span className="font-bold text-slate-800">{selectedIds.size}</span> {t.bulk.selected} ·{' '}
                     <span className="font-bold text-indigo-700">${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                   </span>
                 )}
@@ -189,7 +191,7 @@ const BulkReimbursement: React.FC = () => {
                 className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition-colors"
               >
                 <Banknote size={16} />
-                Mark as Paid
+                {t.actions.markAsPaid}
               </button>
             </div>
           </>

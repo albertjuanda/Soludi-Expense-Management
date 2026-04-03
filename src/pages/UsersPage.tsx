@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store/appStore';
+import { useTranslation } from '../i18n/useTranslation';
 import Avatar from '../components/ui/Avatar';
 import Modal from '../components/ui/Modal';
 import { Plus, Pencil, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import type { UserRole } from '../types';
-
-const roleLabels: Record<UserRole, string> = {
-  super_admin: 'Super Admin',
-  admin: 'Admin',
-  user: 'Team Member',
-};
 
 const roleColors: Record<UserRole, string> = {
   super_admin: 'bg-violet-100 text-violet-700',
@@ -20,6 +15,7 @@ const roleColors: Record<UserRole, string> = {
 
 const UsersPage: React.FC = () => {
   const { users, updateUser, createUser } = useAppStore();
+  const { t } = useTranslation();
   const [editUser, setEditUser] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState('');
@@ -58,27 +54,27 @@ const UsersPage: React.FC = () => {
   });
 
   const roles: Array<{ value: UserRole | ''; label: string }> = [
-    { value: '', label: 'All Roles' },
-    { value: 'super_admin', label: 'Super Admin' },
-    { value: 'admin', label: 'Admin' },
-    { value: 'user', label: 'Team Member' },
+    { value: '', label: t.users.allRoles },
+    { value: 'super_admin', label: t.roles.super_admin },
+    { value: 'admin', label: t.roles.admin },
+    { value: 'user', label: t.roles.user },
   ];
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Users</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{filtered.length} user{filtered.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t.users.title}</h1>
+          <p className="text-slate-500 text-sm mt-0.5">{filtered.length} {filtered.length !== 1 ? t.users.title.toLowerCase() : t.users.title.toLowerCase()}</p>
         </div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors">
-          <Plus size={16} /> Invite User
+          <Plus size={16} /> {t.actions.inviteUser}
         </button>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
-        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search users..."
+        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder={t.users.searchPlaceholder}
           className="flex-1 min-w-48 text-sm border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white" />
         <div className="flex gap-2">
           {roles.map(r => (
@@ -94,16 +90,16 @@ const UsersPage: React.FC = () => {
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
           <Users size={16} className="text-slate-400" />
-          <h2 className="text-sm font-bold text-slate-800">All Users</h2>
+          <h2 className="text-sm font-bold text-slate-800">{t.users.allUsers}</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">User</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Role</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">Department</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden lg:table-cell">Joined</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.users.name}</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.users.role}</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">{t.users.department}</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden lg:table-cell">{t.users.joined}</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -120,7 +116,7 @@ const UsersPage: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${roleColors[u.role]}`}>{roleLabels[u.role]}</span>
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${roleColors[u.role]}`}>{t.roles[u.role]}</span>
                   </td>
                   <td className="px-4 py-4 text-slate-600 hidden md:table-cell">{u.department || '—'}</td>
                   <td className="px-4 py-4 text-slate-400 text-xs hidden lg:table-cell">
@@ -139,10 +135,10 @@ const UsersPage: React.FC = () => {
       </div>
 
       {/* Edit modal */}
-      <Modal isOpen={!!editUser} onClose={() => setEditUser(null)} title="Edit User">
+      <Modal isOpen={!!editUser} onClose={() => setEditUser(null)} title={t.users.editUser}>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Name</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.users.name}</label>
             <input type="text" value={editForm.name} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
@@ -152,60 +148,60 @@ const UsersPage: React.FC = () => {
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Role</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.users.role}</label>
             <select value={editForm.role} onChange={e => setEditForm(f => ({ ...f, role: e.target.value as UserRole }))}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white">
-              <option value="user">Team Member</option>
-              <option value="admin">Admin</option>
-              <option value="super_admin">Super Admin</option>
+              <option value="user">{t.roles.user}</option>
+              <option value="admin">{t.roles.admin}</option>
+              <option value="super_admin">{t.roles.super_admin}</option>
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Department</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.users.department}</label>
             <input type="text" value={editForm.department} onChange={e => setEditForm(f => ({ ...f, department: e.target.value }))}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setEditUser(null)} className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Cancel</button>
-            <button onClick={handleEdit} className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl">Save Changes</button>
+            <button onClick={() => setEditUser(null)} className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">{t.actions.cancel}</button>
+            <button onClick={handleEdit} className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl">{t.actions.saveChanges}</button>
           </div>
         </div>
       </Modal>
 
       {/* Create modal */}
-      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Invite New User">
+      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title={t.users.inviteTitle}>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Full Name <span className="text-rose-500">*</span></label>
-            <input type="text" value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} placeholder="Full name"
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.users.fullName} <span className="text-rose-500">*</span></label>
+            <input type="text" value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} placeholder={t.users.fullNamePlaceholder}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">Email <span className="text-rose-500">*</span></label>
-            <input type="email" value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} placeholder="email@company.com"
+            <input type="email" value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} placeholder={t.users.emailPlaceholder}
               className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Role</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.users.role}</label>
               <select value={createForm.role} onChange={e => setCreateForm(f => ({ ...f, role: e.target.value as UserRole }))}
                 className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white">
-                <option value="user">Team Member</option>
-                <option value="admin">Admin</option>
-                <option value="super_admin">Super Admin</option>
+                <option value="user">{t.roles.user}</option>
+                <option value="admin">{t.roles.admin}</option>
+                <option value="super_admin">{t.roles.super_admin}</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Department</label>
-              <input type="text" value={createForm.department} onChange={e => setCreateForm(f => ({ ...f, department: e.target.value }))} placeholder="e.g., Field Ops"
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.users.department}</label>
+              <input type="text" value={createForm.department} onChange={e => setCreateForm(f => ({ ...f, department: e.target.value }))} placeholder={t.users.departmentPlaceholder}
                 className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Cancel</button>
+            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">{t.actions.cancel}</button>
             <button onClick={handleCreate} disabled={!createForm.name || !createForm.email}
               className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl flex items-center gap-2">
-              <Plus size={15} /> Add User
+              <Plus size={15} /> {t.actions.addUser}
             </button>
           </div>
         </div>

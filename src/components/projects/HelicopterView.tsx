@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ExpenseRequest } from '../../types';
 import { TrendingUp, CheckCircle2, Banknote, DollarSign } from 'lucide-react';
+import { useTranslation } from '../../i18n/useTranslation';
 
 interface HelicopterViewProps {
   expenses: ExpenseRequest[];
@@ -8,6 +9,8 @@ interface HelicopterViewProps {
 }
 
 const HelicopterView: React.FC<HelicopterViewProps> = ({ expenses, budget }) => {
+  const { t } = useTranslation();
+
   const grossExposure = expenses
     .filter(e => ['processing', 'approved', 'scheduled'].includes(e.status))
     .reduce((sum, e) => sum + e.totalAmount, 0);
@@ -24,28 +27,28 @@ const HelicopterView: React.FC<HelicopterViewProps> = ({ expenses, budget }) => 
 
   const metrics = [
     {
-      label: 'Gross Exposure',
+      label: t.helicopter.grossExposure,
       value: grossExposure,
       icon: <TrendingUp size={18} />,
-      description: 'Processing + Approved + Scheduled',
+      description: t.helicopter.grossDesc,
       color: 'text-amber-600',
       bg: 'bg-amber-50',
       border: 'border-amber-200',
     },
     {
-      label: 'Confirmed Liability',
+      label: t.helicopter.confirmedLiability,
       value: confirmedLiability,
       icon: <CheckCircle2 size={18} />,
-      description: 'Approved + Scheduled',
+      description: t.helicopter.confirmedDesc,
       color: 'text-emerald-600',
       bg: 'bg-emerald-50',
       border: 'border-emerald-200',
     },
     {
-      label: 'Disbursed',
+      label: t.helicopter.disbursed,
       value: disbursed,
       icon: <Banknote size={18} />,
-      description: 'Fully reimbursed',
+      description: t.helicopter.disbursedDesc,
       color: 'text-indigo-600',
       bg: 'bg-indigo-50',
       border: 'border-indigo-200',
@@ -76,7 +79,7 @@ const HelicopterView: React.FC<HelicopterViewProps> = ({ expenses, budget }) => 
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <DollarSign size={16} className="text-slate-500" />
-              <span className="text-sm font-semibold text-slate-700">Budget Utilization</span>
+              <span className="text-sm font-semibold text-slate-700">{t.helicopter.budgetUtilization}</span>
             </div>
             <span className="text-sm font-bold text-slate-700">
               ${(disbursed + confirmedLiability).toLocaleString()} / ${budget.toLocaleString()}
@@ -90,7 +93,7 @@ const HelicopterView: React.FC<HelicopterViewProps> = ({ expenses, budget }) => 
               style={{ width: `${Math.min(budgetUsed, 100)}%` }}
             />
           </div>
-          <p className="text-xs text-slate-500 mt-1.5">{budgetUsed.toFixed(1)}% of budget utilized</p>
+          <p className="text-xs text-slate-500 mt-1.5">{budgetUsed.toFixed(1)}% {t.helicopter.ofBudget}</p>
         </div>
       )}
     </div>

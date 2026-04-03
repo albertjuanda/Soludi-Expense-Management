@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store/appStore';
+import { useTranslation } from '../i18n/useTranslation';
 import CategoryChart from '../components/reports/CategoryChart';
 import BulkReimbursement from '../components/reports/BulkReimbursement';
 import MetricCard from '../components/dashboard/MetricCard';
@@ -7,6 +8,7 @@ import { TrendingUp, CheckCircle2, DollarSign, Clock, Download, BarChart2 } from
 
 const ReportsPage: React.FC = () => {
   const { expenses, projects, users } = useAppStore();
+  const { t } = useTranslation();
   const [chartType, setChartType] = useState<'donut' | 'bar'>('donut');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -28,11 +30,11 @@ const ReportsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Global financial analytics and bulk payment management.</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t.reports.title}</h1>
+          <p className="text-slate-500 text-sm mt-0.5">{t.reports.description}</p>
         </div>
         <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:border-slate-300 text-slate-600 text-sm font-semibold rounded-xl transition-colors">
-          <Download size={15} /> Export Report
+          <Download size={15} /> {t.actions.export}
         </button>
       </div>
 
@@ -40,20 +42,20 @@ const ReportsPage: React.FC = () => {
       <div className="bg-white border border-slate-200 rounded-xl p-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Project</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.project}</label>
             <select value={selectedProject} onChange={e => setSelectedProject(e.target.value)}
               className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white">
-              <option value="">All Projects</option>
+              <option value="">{t.expenses.allProjects}</option>
               {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">From</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.fromDate}</label>
             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
               className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">To</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.toDate}</label>
             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
               className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
           </div>
@@ -62,18 +64,18 @@ const ReportsPage: React.FC = () => {
 
       {/* Summary metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label="Total Requested" value={`$${totalRequested.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={`${filteredExpenses.length} requests`} icon={<TrendingUp size={20} />} color="amber" />
-        <MetricCard label="Total Approved" value={`$${totalApproved.toLocaleString('en-US',{minimumFractionDigits:2})}`} icon={<CheckCircle2 size={20} />} color="emerald" />
-        <MetricCard label="Total Reimbursed" value={`$${totalReimbursed.toLocaleString('en-US',{minimumFractionDigits:2})}`} icon={<DollarSign size={20} />} color="indigo" />
-        <MetricCard label="Pending Review" value={pendingCount} subValue="awaiting approval" icon={<Clock size={20} />} color="rose" />
+        <MetricCard label={t.dashboard.totalRequested} value={`$${totalRequested.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={`${filteredExpenses.length} ${t.dashboard.requests}`} icon={<TrendingUp size={20} />} color="amber" />
+        <MetricCard label={t.dashboard.totalApproved} value={`$${totalApproved.toLocaleString('en-US',{minimumFractionDigits:2})}`} icon={<CheckCircle2 size={20} />} color="emerald" />
+        <MetricCard label={t.dashboard.totalReimbursed} value={`$${totalReimbursed.toLocaleString('en-US',{minimumFractionDigits:2})}`} icon={<DollarSign size={20} />} color="indigo" />
+        <MetricCard label={t.dashboard.pendingReview} value={pendingCount} subValue={t.metrics.awaitingApproval} icon={<Clock size={20} />} color="rose" />
       </div>
 
       {/* Charts */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-base font-bold text-slate-800">Spending by Category</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Top expense categories across all requests</p>
+            <h2 className="text-base font-bold text-slate-800">{t.reports.spendingByCategory}</h2>
+            <p className="text-xs text-slate-400 mt-0.5">{t.reports.spendingDesc}</p>
           </div>
           <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
             <button onClick={() => setChartType('donut')} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${chartType === 'donut' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
@@ -89,7 +91,7 @@ const ReportsPage: React.FC = () => {
 
       {/* Project breakdown */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-base font-bold text-slate-800 mb-4">Project Breakdown</h2>
+        <h2 className="text-base font-bold text-slate-800 mb-4">{t.reports.projectBreakdown}</h2>
         <div className="space-y-3">
           {projects.map(project => {
             const projExpenses = filteredExpenses.filter(e => e.projectId === project.id);
@@ -103,7 +105,7 @@ const ReportsPage: React.FC = () => {
                   <h3 className="text-sm font-semibold text-slate-800">{project.name}</h3>
                   <div className="text-right">
                     <p className="text-sm font-bold text-slate-800">${total.toLocaleString('en-US',{minimumFractionDigits:2})}</p>
-                    <p className="text-xs text-slate-400">{projExpenses.length} requests</p>
+                    <p className="text-xs text-slate-400">{projExpenses.length} {t.dashboard.requests}</p>
                   </div>
                 </div>
                 {project.budget && pct !== null && (
@@ -111,7 +113,7 @@ const ReportsPage: React.FC = () => {
                     <div className="w-full bg-slate-100 rounded-full h-1.5 mb-1">
                       <div className={`h-1.5 rounded-full ${pct > 90 ? 'bg-rose-500' : pct > 70 ? 'bg-amber-500' : 'bg-indigo-500'}`} style={{ width: `${pct}%` }} />
                     </div>
-                    <p className="text-xs text-slate-400">{pct.toFixed(1)}% of ${project.budget.toLocaleString()} budget</p>
+                    <p className="text-xs text-slate-400">{pct.toFixed(1)}{t.reports.ofBudget} ${project.budget.toLocaleString()}</p>
                   </>
                 )}
                 <div className="flex gap-4 mt-2 text-xs text-slate-500">
@@ -129,16 +131,16 @@ const ReportsPage: React.FC = () => {
 
       {/* Team breakdown */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-base font-bold text-slate-800 mb-4">Team Member Breakdown</h2>
+        <h2 className="text-base font-bold text-slate-800 mb-4">{t.reports.teamBreakdown}</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="text-left py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Member</th>
-                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Requests</th>
-                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Requested</th>
-                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Approved</th>
-                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Reimbursed</th>
+                <th className="text-left py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.reports.member}</th>
+                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.reports.requests}</th>
+                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.reports.requested}</th>
+                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.status.approved}</th>
+                <th className="text-right py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.status.reimbursed}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -170,7 +172,7 @@ const ReportsPage: React.FC = () => {
 
       {/* Bulk reimbursement */}
       <div>
-        <h2 className="text-base font-bold text-slate-800 mb-3">Bulk Reimbursement</h2>
+        <h2 className="text-base font-bold text-slate-800 mb-3">{t.reports.bulkReimbursement}</h2>
         <BulkReimbursement />
       </div>
     </div>

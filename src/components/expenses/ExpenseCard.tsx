@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ExpenseRequest } from '../../types';
 import { useAppStore } from '../../store/appStore';
+import { useTranslation } from '../../i18n/useTranslation';
 import StatusPill from '../ui/StatusPill';
 import Avatar from '../ui/Avatar';
 import { format } from 'date-fns';
@@ -14,6 +15,7 @@ interface ExpenseCardProps {
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
   const { users, projects } = useAppStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const user = users.find(u => u.id === expense.userId);
   const project = projects.find(p => p.id === expense.projectId);
@@ -40,7 +42,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
         </div>
         <div className="text-right flex-shrink-0">
           <p className="text-sm font-bold text-slate-900">${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-          <p className="text-xs text-slate-400">{expense.items.length} item{expense.items.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs text-slate-400">{expense.items.length} {expense.items.length !== 1 ? t.expenses.itemsPlural : t.expenses.items}</p>
         </div>
       </div>
 

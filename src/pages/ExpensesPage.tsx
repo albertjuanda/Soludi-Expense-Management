@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
+import { useTranslation } from '../i18n/useTranslation';
 import ExpenseCard from '../components/expenses/ExpenseCard';
 import StatusPill from '../components/ui/StatusPill';
 import EmptyState from '../components/ui/EmptyState';
@@ -11,6 +12,7 @@ const ALL_STATUSES: ExpenseStatus[] = ['processing', 'approved', 'rejected', 're
 
 const ExpensesPage: React.FC = () => {
   const { currentUser, expenses, projects, users } = useAppStore();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
   const [search, setSearch] = useState('');
@@ -79,15 +81,17 @@ const ExpensesPage: React.FC = () => {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">{isAdmin ? 'All Expenses' : 'My Expenses'}</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{filtered.length} request{filtered.length !== 1 ? 's' : ''} found</p>
+          <h1 className="text-2xl font-bold text-slate-900">{isAdmin ? t.expenses.allExpenses : t.expenses.myExpenses}</h1>
+          <p className="text-slate-500 text-sm mt-0.5">
+            {filtered.length} {filtered.length !== 1 ? t.expenses.requestsFoundPlural : t.expenses.requestsFound} {t.expenses.found}
+          </p>
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
           className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition-colors ${showFilters ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'}`}
         >
           <SlidersHorizontal size={15} />
-          Filters
+          {t.expenses.filters}
           {hasFilters && <span className="w-2 h-2 rounded-full bg-rose-400" />}
         </button>
       </div>
@@ -99,7 +103,7 @@ const ExpensesPage: React.FC = () => {
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search by item name, category, or request ID..."
+          placeholder={t.expenses.searchPlaceholder}
           className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400"
         />
         {search && (
@@ -115,7 +119,7 @@ const ExpensesPage: React.FC = () => {
           onClick={() => setSelectedStatus(null)}
           className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ${!selectedStatus ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'}`}
         >
-          All ({baseExpenses.length})
+          {t.expenses.all} ({baseExpenses.length})
         </button>
         {ALL_STATUSES.map(status => {
           const count = baseExpenses.filter(e => e.status === status).length;
@@ -138,37 +142,37 @@ const ExpensesPage: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Project</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.project}</label>
               <select value={selectedProject} onChange={e => setSelectedProject(e.target.value)}
                 className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white">
-                <option value="">All Projects</option>
+                <option value="">{t.expenses.allProjects}</option>
                 {availableProjects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </div>
             {isAdmin && (
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Team Member</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.teamMember}</label>
                 <select value={selectedUser} onChange={e => setSelectedUser(e.target.value)}
                   className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 bg-white">
-                  <option value="">All Members</option>
+                  <option value="">{t.expenses.allMembers}</option>
                   {teamUsers.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                 </select>
               </div>
             )}
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">From Date</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.fromDate}</label>
               <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
                 className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">To Date</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenses.toDate}</label>
               <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
                 className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400" />
             </div>
           </div>
           {hasFilters && (
             <button onClick={clearFilters} className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-800">
-              <X size={13} /> Clear all filters
+              <X size={13} /> {t.actions.clearFilters}
             </button>
           )}
         </div>
@@ -178,9 +182,9 @@ const ExpensesPage: React.FC = () => {
       {filtered.length === 0 ? (
         <EmptyState
           icon={<FileText size={28} className="text-slate-300" />}
-          title="No expenses found"
-          description={hasFilters ? 'Try adjusting your filters.' : 'No expense requests yet.'}
-          action={hasFilters ? <button onClick={clearFilters} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">Clear filters</button> : undefined}
+          title={t.expenses.noExpensesFound}
+          description={hasFilters ? t.expenses.tryAdjusting : t.expenses.noExpensesYet}
+          action={hasFilters ? <button onClick={clearFilters} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">{t.actions.clearFilters}</button> : undefined}
         />
       ) : (
         <div className="space-y-3">
