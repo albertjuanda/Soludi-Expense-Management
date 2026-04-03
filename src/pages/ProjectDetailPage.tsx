@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
 import { useTranslation } from '../i18n/useTranslation';
+import { formatRp } from '../utils/currency';
 import HelicopterView from '../components/projects/HelicopterView';
 import ExpenseCard from '../components/expenses/ExpenseCard';
 import Avatar from '../components/ui/Avatar';
@@ -71,7 +72,7 @@ const ProjectDetailPage: React.FC = () => {
           )}
           {project.budget && (
             <div className="text-sm">
-              Budget: <span className="font-semibold text-slate-700">${project.budget.toLocaleString()}</span>
+              Budget: <span className="font-semibold text-slate-700">{formatRp(project.budget)}</span>
             </div>
           )}
         </div>

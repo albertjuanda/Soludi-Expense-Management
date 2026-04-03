@@ -5,6 +5,7 @@ import { useAppStore } from '../../store/appStore';
 import StatusPill from '../ui/StatusPill';
 import { AlertCircle, Clock, ArrowRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { formatRp } from '../../utils/currency';
 
 interface PendingActionsProps {
   expenses: ExpenseRequest[];
@@ -64,7 +65,7 @@ const PendingActions: React.FC<PendingActionsProps> = ({ expenses, role }) => {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="text-sm font-bold text-slate-700">
-                    ${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatRp(expense.totalAmount)}
                   </span>
                   <ArrowRight size={14} className="text-slate-300 group-hover:text-indigo-400 transition-colors" />
                 </div>

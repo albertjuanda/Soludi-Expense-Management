@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
 import { useTranslation } from '../i18n/useTranslation';
+import { formatRp } from '../utils/currency';
 import AuditTrail from '../components/expenses/AuditTrail';
 import RevisionResponseForm from '../components/expenses/RevisionResponseForm';
 import StatusPill from '../components/ui/StatusPill';
@@ -82,7 +83,7 @@ const ExpenseDetailPage: React.FC = () => {
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{expense.requestId}</p>
         <p className="text-4xl font-bold text-slate-900 mb-3">
-          ${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          {formatRp(expense.totalAmount)}
         </p>
         <div className="flex justify-center">
           <StatusPill status={expense.status} />
@@ -161,10 +162,10 @@ const ExpenseDetailPage: React.FC = () => {
                   <td className="px-5 py-3.5 font-medium text-slate-800">{item.itemName}</td>
                   <td className="px-3 py-3.5 text-center text-slate-600">{item.qty}</td>
                   <td className="px-3 py-3.5 text-right text-slate-600">
-                    ${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatRp(item.pricePerUnit)}
                   </td>
                   <td className="px-5 py-3.5 text-right font-semibold text-slate-800">
-                    ${item.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {formatRp(item.subtotal)}
                   </td>
                 </tr>
               ))}
@@ -173,7 +174,7 @@ const ExpenseDetailPage: React.FC = () => {
               <tr className="bg-slate-50 border-t border-slate-200">
                 <td colSpan={4} className="px-5 py-3.5 text-sm font-bold text-slate-700 text-right">{t.expenseDetail.total}</td>
                 <td className="px-5 py-3.5 text-right text-base font-bold text-indigo-700">
-                  ${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  {formatRp(expense.totalAmount)}
                 </td>
               </tr>
             </tfoot>
@@ -207,7 +208,7 @@ const ExpenseDetailPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs text-slate-400">{t.expenseDetail.totalApprovedAmount}</p>
-                <p className="text-base font-bold text-slate-800 mt-0.5">${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-base font-bold text-slate-800 mt-0.5">{formatRp(expense.totalAmount)}</p>
               </div>
               <div>
                 <p className="text-xs text-slate-400">{t.expenseDetail.totalVariance}</p>
@@ -291,7 +292,7 @@ const ExpenseDetailPage: React.FC = () => {
       {/* Modals */}
       <Modal isOpen={approveModal} onClose={() => { setApproveModal(false); setComment(''); }} title={t.actions.approve}>
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">{t.expenseDetail.approveConfirm} <span className="font-semibold">{expense.requestId}</span> {t.expenseDetail.for} <span className="font-semibold">${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>?</p>
+          <p className="text-sm text-slate-600">{t.expenseDetail.approveConfirm} <span className="font-semibold">{expense.requestId}</span> {t.expenseDetail.for} <span className="font-semibold">{formatRp(expense.totalAmount)}</span>?</p>
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.expenseDetail.commentOptional}</label>
             <textarea value={comment} onChange={e => setComment(e.target.value)} rows={3} placeholder={t.expenseDetail.approveCommentPlaceholder}

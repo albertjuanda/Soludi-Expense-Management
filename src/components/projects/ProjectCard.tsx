@@ -4,6 +4,7 @@ import type { Project, ExpenseRequest } from '../../types';
 import { useAppStore } from '../../store/appStore';
 import { Calendar, Users, ChevronRight, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
+import { formatRp } from '../../utils/currency';
 
 interface ProjectCardProps {
   project: Project;
@@ -73,7 +74,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               <span>Budget</span>
             </div>
             <span className="font-semibold text-slate-700">
-              ${totalSpent.toLocaleString()} / ${project.budget.toLocaleString()}
+              {formatRp(totalSpent)} / {formatRp(project.budget)}
             </span>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-1.5">
@@ -94,7 +95,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           <span className="font-semibold text-slate-700">{projectExpenses.length}</span> expense{projectExpenses.length !== 1 ? 's' : ''}
         </div>
         <div className="text-xs font-semibold text-slate-700">
-          ${totalSpent.toLocaleString('en-US', { minimumFractionDigits: 2 })} committed
+          {formatRp(totalSpent)} committed
         </div>
       </div>
     </div>

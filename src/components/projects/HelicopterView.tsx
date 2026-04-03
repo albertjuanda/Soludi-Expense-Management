@@ -2,6 +2,7 @@ import React from 'react';
 import type { ExpenseRequest } from '../../types';
 import { TrendingUp, CheckCircle2, Banknote, DollarSign } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
+import { formatRp } from '../../utils/currency';
 
 interface HelicopterViewProps {
   expenses: ExpenseRequest[];
@@ -67,7 +68,7 @@ const HelicopterView: React.FC<HelicopterViewProps> = ({ expenses, budget }) => 
               </div>
             </div>
             <p className={`text-2xl font-bold ${m.color}`}>
-              ${m.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {formatRp(m.value)}
             </p>
             <p className="text-xs text-slate-400 mt-1">{m.description}</p>
           </div>
@@ -82,7 +83,7 @@ const HelicopterView: React.FC<HelicopterViewProps> = ({ expenses, budget }) => 
               <span className="text-sm font-semibold text-slate-700">{t.helicopter.budgetUtilization}</span>
             </div>
             <span className="text-sm font-bold text-slate-700">
-              ${(disbursed + confirmedLiability).toLocaleString()} / ${budget.toLocaleString()}
+              {formatRp(disbursed + confirmedLiability)} / {formatRp(budget)}
             </span>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-2.5">

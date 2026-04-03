@@ -6,6 +6,7 @@ import StatusPill from '../ui/StatusPill';
 import Avatar from '../ui/Avatar';
 import { format } from 'date-fns';
 import { ArrowRight } from 'lucide-react';
+import { formatRp } from '../../utils/currency';
 
 interface RecentExpensesProps {
   expenses: ExpenseRequest[];
@@ -51,7 +52,7 @@ const RecentExpenses: React.FC<RecentExpensesProps> = ({ expenses, limit = 5 }) 
                   <p className="text-xs text-slate-500 truncate">{project?.name}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-slate-800">${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                  <p className="text-sm font-bold text-slate-800">{formatRp(expense.totalAmount)}</p>
                   <p className="text-xs text-slate-400">{format(new Date(expense.createdAt), 'MMM d')}</p>
                 </div>
               </div>

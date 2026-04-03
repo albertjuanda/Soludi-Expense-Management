@@ -12,6 +12,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import type { ExpenseRequest } from '../../types';
+import { formatRp } from '../../utils/currency';
 
 interface CategoryChartProps {
   expenses: ExpenseRequest[];
@@ -50,7 +51,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ expenses, type = 'donut' 
       return (
         <div className="bg-white border border-slate-200 rounded-xl shadow-lg px-4 py-3">
           <p className="text-sm font-semibold text-slate-800">{payload[0].name}</p>
-          <p className="text-sm text-slate-600">${payload[0].value.toLocaleString()}</p>
+          <p className="text-sm text-slate-600">{formatRp(payload[0].value)}</p>
           <p className="text-xs text-slate-400">{pct}% of total</p>
         </div>
       );
@@ -108,7 +109,7 @@ const CategoryChart: React.FC<CategoryChartProps> = ({ expenses, type = 'donut' 
             />
             <span className="text-xs text-slate-600 flex-1 truncate">{item.name}</span>
             <span className="text-xs font-semibold text-slate-700">
-              ${item.value.toLocaleString()}
+              {formatRp(item.value)}
             </span>
           </div>
         ))}

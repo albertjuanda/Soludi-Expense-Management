@@ -7,6 +7,7 @@ import StatusPill from '../ui/StatusPill';
 import Avatar from '../ui/Avatar';
 import { format } from 'date-fns';
 import { ChevronRight, Receipt } from 'lucide-react';
+import { formatRp } from '../../utils/currency';
 
 interface ExpenseCardProps {
   expense: ExpenseRequest;
@@ -41,7 +42,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense }) => {
           </div>
         </div>
         <div className="text-right flex-shrink-0">
-          <p className="text-sm font-bold text-slate-900">${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+          <p className="text-sm font-bold text-slate-900">{formatRp(expense.totalAmount)}</p>
           <p className="text-xs text-slate-400">{expense.items.length} {expense.items.length !== 1 ? t.expenses.itemsPlural : t.expenses.items}</p>
         </div>
       </div>

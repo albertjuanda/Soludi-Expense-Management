@@ -4,6 +4,7 @@ import { CalendarClock, CheckCircle2, Banknote, ChevronDown } from 'lucide-react
 import StatusPill from '../ui/StatusPill';
 import { format } from 'date-fns';
 import { useTranslation } from '../../i18n/useTranslation';
+import { formatRp } from '../../utils/currency';
 
 const BulkReimbursement: React.FC = () => {
   const { expenses, users, projects, schedule, updateSchedule, bulkMarkReimbursed } = useAppStore();
@@ -170,7 +171,7 @@ const BulkReimbursement: React.FC = () => {
                       </p>
                     </div>
                     <span className="text-sm font-bold text-slate-800">
-                      ${expense.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {formatRp(expense.totalAmount)}
                     </span>
                   </div>
                 );
@@ -181,7 +182,7 @@ const BulkReimbursement: React.FC = () => {
                 {selectedIds.size > 0 && (
                   <span>
                     <span className="font-bold text-slate-800">{selectedIds.size}</span> {t.bulk.selected} ·{' '}
-                    <span className="font-bold text-indigo-700">${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-indigo-700">{formatRp(totalAmount)}</span>
                   </span>
                 )}
               </div>

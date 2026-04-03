@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store/appStore';
 import { useTranslation } from '../i18n/useTranslation';
+import { formatRp } from '../utils/currency';
 import CategoryChart from '../components/reports/CategoryChart';
 import BulkReimbursement from '../components/reports/BulkReimbursement';
 import MetricCard from '../components/dashboard/MetricCard';
@@ -64,9 +65,9 @@ const ReportsPage: React.FC = () => {
 
       {/* Summary metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label={t.dashboard.totalRequested} value={`$${totalRequested.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={`${filteredExpenses.length} ${t.dashboard.requests}`} icon={<TrendingUp size={20} />} color="amber" />
-        <MetricCard label={t.dashboard.totalApproved} value={`$${totalApproved.toLocaleString('en-US',{minimumFractionDigits:2})}`} icon={<CheckCircle2 size={20} />} color="emerald" />
-        <MetricCard label={t.dashboard.totalReimbursed} value={`$${totalReimbursed.toLocaleString('en-US',{minimumFractionDigits:2})}`} icon={<DollarSign size={20} />} color="indigo" />
+        <MetricCard label={t.dashboard.totalRequested} value={formatRp(totalRequested)} subValue={`${filteredExpenses.length} ${t.dashboard.requests}`} icon={<TrendingUp size={20} />} color="amber" />
+        <MetricCard label={t.dashboard.totalApproved} value={formatRp(totalApproved)} icon={<CheckCircle2 size={20} />} color="emerald" />
+        <MetricCard label={t.dashboard.totalReimbursed} value={formatRp(totalReimbursed)} icon={<DollarSign size={20} />} color="indigo" />
         <MetricCard label={t.dashboard.pendingReview} value={pendingCount} subValue={t.metrics.awaitingApproval} icon={<Clock size={20} />} color="rose" />
       </div>
 
@@ -104,7 +105,7 @@ const ReportsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-semibold text-slate-800">{project.name}</h3>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-slate-800">${total.toLocaleString('en-US',{minimumFractionDigits:2})}</p>
+                    <p className="text-sm font-bold text-slate-800">{formatRp(total)}</p>
                     <p className="text-xs text-slate-400">{projExpenses.length} {t.dashboard.requests}</p>
                   </div>
                 </div>
@@ -113,7 +114,7 @@ const ReportsPage: React.FC = () => {
                     <div className="w-full bg-slate-100 rounded-full h-1.5 mb-1">
                       <div className={`h-1.5 rounded-full ${pct > 90 ? 'bg-rose-500' : pct > 70 ? 'bg-amber-500' : 'bg-indigo-500'}`} style={{ width: `${pct}%` }} />
                     </div>
-                    <p className="text-xs text-slate-400">{pct.toFixed(1)}{t.reports.ofBudget} ${project.budget.toLocaleString()}</p>
+                    <p className="text-xs text-slate-400">{pct.toFixed(1)}{t.reports.ofBudget} {formatRp(project.budget)}</p>
                   </>
                 )}
                 <div className="flex gap-4 mt-2 text-xs text-slate-500">
@@ -159,9 +160,9 @@ const ReportsPage: React.FC = () => {
                       </div>
                     </td>
                     <td className="py-3 text-right text-slate-600">{ue.length}</td>
-                    <td className="py-3 text-right font-medium text-slate-800">${req.toLocaleString('en-US',{minimumFractionDigits:2})}</td>
-                    <td className="py-3 text-right font-medium text-emerald-700">${app.toLocaleString('en-US',{minimumFractionDigits:2})}</td>
-                    <td className="py-3 text-right font-medium text-indigo-700">${reimb.toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+                    <td className="py-3 text-right font-medium text-slate-800">{formatRp(req)}</td>
+                    <td className="py-3 text-right font-medium text-emerald-700">{formatRp(app)}</td>
+                    <td className="py-3 text-right font-medium text-indigo-700">{formatRp(reimb)}</td>
                   </tr>
                 );
               })}

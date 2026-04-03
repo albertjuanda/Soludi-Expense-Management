@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/appStore';
 import { useTranslation } from '../i18n/useTranslation';
+import { formatRp } from '../utils/currency';
 import MetricCard from '../components/dashboard/MetricCard';
 import ExpenseCard from '../components/expenses/ExpenseCard';
 import { DollarSign, CheckCircle2, Clock, AlertTriangle, TrendingUp, Users, FolderOpen, ChevronRight } from 'lucide-react';
@@ -64,21 +65,21 @@ const DashboardPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <MetricCard
             label={t.dashboard.totalRequested}
-            value={`$${totalRequested.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+            value={formatRp(totalRequested)}
             subValue={`${myExpenses.length} ${t.dashboard.requests}`}
             icon={<DollarSign size={20} />}
             color="indigo"
           />
           <MetricCard
             label={t.dashboard.totalApproved}
-            value={`$${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+            value={formatRp(totalApproved)}
             subValue={`${myExpenses.filter(e => ['approved','scheduled','reimbursed'].includes(e.status)).length} ${t.dashboard.requests}`}
             icon={<CheckCircle2 size={20} />}
             color="emerald"
           />
           <MetricCard
             label={t.dashboard.totalReimbursed}
-            value={`$${totalReimbursed.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+            value={formatRp(totalReimbursed)}
             subValue={`${myExpenses.filter(e => e.status === 'reimbursed').length} ${t.dashboard.paidOut}`}
             icon={<TrendingUp size={20} />}
             color="violet"
@@ -126,7 +127,7 @@ const DashboardPage: React.FC = () => {
           <MetricCard label={t.dashboard.activeProjects} value={adminProjects.filter(p => p.status === 'active').length} icon={<FolderOpen size={20} />} color="indigo" />
           <MetricCard
             label={t.dashboard.totalCommitted}
-            value={`$${scopedExpenses.filter(e => ['approved','scheduled','reimbursed'].includes(e.status)).reduce((s,e)=>s+e.totalAmount,0).toLocaleString('en-US',{minimumFractionDigits:2})}`}
+            value={formatRp(scopedExpenses.filter(e => ['approved','scheduled','reimbursed'].includes(e.status)).reduce((s,e)=>s+e.totalAmount,0))}
             icon={<CheckCircle2 size={20} />}
             color="emerald"
           />
@@ -198,9 +199,9 @@ const DashboardPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label={t.dashboard.grossExposure} value={`$${totalExposure.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={t.metrics.processingApprovedScheduled} icon={<TrendingUp size={20} />} color="amber" />
-        <MetricCard label={t.dashboard.confirmedLiability} value={`$${confirmedLiability.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={t.metrics.approvedScheduled} icon={<CheckCircle2 size={20} />} color="emerald" />
-        <MetricCard label={t.dashboard.totalDisbursed} value={`$${disbursed.toLocaleString('en-US',{minimumFractionDigits:2})}`} subValue={`${expenses.filter(e=>e.status==='reimbursed').length} ${t.metrics.reimbursed}`} icon={<DollarSign size={20} />} color="indigo" />
+        <MetricCard label={t.dashboard.grossExposure} value={formatRp(totalExposure)} subValue={t.metrics.processingApprovedScheduled} icon={<TrendingUp size={20} />} color="amber" />
+        <MetricCard label={t.dashboard.confirmedLiability} value={formatRp(confirmedLiability)} subValue={t.metrics.approvedScheduled} icon={<CheckCircle2 size={20} />} color="emerald" />
+        <MetricCard label={t.dashboard.totalDisbursed} value={formatRp(disbursed)} subValue={`${expenses.filter(e=>e.status==='reimbursed').length} ${t.metrics.reimbursed}`} icon={<DollarSign size={20} />} color="indigo" />
         <MetricCard label={t.dashboard.pendingReview} value={pendingCount} subValue={`${scheduledCount} ${t.dashboard.awaitingPayment}`} icon={<Clock size={20} />} color="rose" />
       </div>
 
@@ -251,7 +252,7 @@ const DashboardPage: React.FC = () => {
                     <p className="text-xs text-slate-400">{u.department}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-bold text-slate-700">${total.toLocaleString('en-US',{minimumFractionDigits:2})}</p>
+                    <p className="text-xs font-bold text-slate-700">{formatRp(total)}</p>
                     <p className="text-xs text-slate-400">{userExpenses.length} {t.dashboard.requests}</p>
                   </div>
                 </div>
