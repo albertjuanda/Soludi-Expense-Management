@@ -3,7 +3,7 @@ import { useAppStore } from '../store/appStore';
 import { useTranslation } from '../i18n/useTranslation';
 import Avatar from '../components/ui/Avatar';
 import Modal from '../components/ui/Modal';
-import { Plus, Pencil, Users } from 'lucide-react';
+import { Plus, Pencil, Users, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import type { UserRole } from '../types';
 
@@ -100,6 +100,7 @@ const UsersPage: React.FC = () => {
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t.users.role}</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">{t.users.department}</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden lg:table-cell">{t.users.joined}</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden xl:table-cell">{t.bank.title}</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -121,6 +122,25 @@ const UsersPage: React.FC = () => {
                   <td className="px-4 py-4 text-slate-600 hidden md:table-cell">{u.department || '—'}</td>
                   <td className="px-4 py-4 text-slate-400 text-xs hidden lg:table-cell">
                     {u.joinedAt ? format(new Date(u.joinedAt), 'MMM d, yyyy') : '—'}
+                  </td>
+                  <td className="px-4 py-4 hidden xl:table-cell">
+                    {u.bankAccount ? (
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-xs font-semibold text-slate-700">{u.bankAccount.bankName.split(' (')[0]}</span>
+                        <span className="text-xs text-slate-400">{u.bankAccount.accountNumber}</span>
+                        {u.bankAccount.verified ? (
+                          <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                            <CheckCircle2 size={10} /> {t.bank.verified}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-xs text-amber-500 font-medium">
+                            <AlertTriangle size={10} /> Unverified
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-slate-300">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-4 text-right">
                     <button onClick={() => openEdit(u.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors">

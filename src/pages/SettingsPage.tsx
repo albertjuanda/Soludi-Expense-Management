@@ -3,6 +3,7 @@ import { useAppStore } from '../store/appStore';
 import { useTranslation } from '../i18n/useTranslation';
 import Modal from '../components/ui/Modal';
 import BulkReimbursement from '../components/reports/BulkReimbursement';
+import BankAccountForm from '../components/settings/BankAccountForm';
 import { Plus, Pencil, Trash2, Tag, CalendarClock, AlertTriangle } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
@@ -90,6 +91,9 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Bank Account */}
+      <BankAccountForm />
 
       {/* Payment Schedule */}
       <div>

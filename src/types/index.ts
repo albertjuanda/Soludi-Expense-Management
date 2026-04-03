@@ -12,6 +12,13 @@ export type ProjectStatus = 'active' | 'completed' | 'on_hold' | 'cancelled';
 
 export type ReimbursementFrequency = 'weekly' | 'biweekly' | 'monthly';
 
+export interface BankAccount {
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  verified: boolean; // true when accountName matches the user's staff name
+}
+
 export interface User {
   id: string;
   name: string;
@@ -21,6 +28,7 @@ export interface User {
   projectIds?: string[];
   department?: string;
   joinedAt: string;
+  bankAccount?: BankAccount;
 }
 
 export interface Project {
